@@ -1,0 +1,50 @@
+{
+  "realm": "quarkus",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      { "name": "read", "description": "Can read expenses" },
+      { "name": "modify", "description": "Can create/update expenses" },
+      { "name": "delete", "description": "Can delete expenses" }
+    ]
+  },
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "alice", "temporary": false }
+      ],
+      "realmRoles": ["read", "modify", "delete"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "backend-service",
+      "name": "backend-service",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "secret",
+      "bearerOnly": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://localhost:8081/*",
+        "http://localhost:*/*"
+      ],
+      "webOrigins": ["+"]
+    }
+  ]
+}
+
+

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="KubernetesApiProvider"><![CDATA[{}]]></component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/05-demo-test-start/test-mock/expenses-service/pom.xml" />
+        <option value="$PROJECT_DIR$/05-demo-test-start/test-unit/expense-restful-service/pom.xml" />
+        <option value="$PROJECT_DIR$/05-demo-test-start/test-devservices/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/11-secure-jwt-start/expenses/pom.xml" />
+        <option value="$PROJECT_DIR$/12-secure-sso-start/expense/pom.xml" />
+        <option value="$PROJECT_DIR$/14-deploy-k8s-start/expense/pom.xml" />
+        <option value="$PROJECT_DIR$/14-deploy-k8s-start/expense-client/pom.xml" />
+        <option value="$PROJECT_DIR$/14-deploy-k8s-start/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-start/session/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-start/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-start/schedule/pom.xml" />
+        <option value="$PROJECT_DIR$/24-aws-genai-bedrock/pom.xml" />
+        <option value="$PROJECT_DIR$/02-develop-rest-start/expense-client/pom.xml" />
+        <option value="$PROJECT_DIR$/02-develop-rest-start/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/05-demo-test-solution/test-mock/pom.xml" />
+        <option value="$PROJECT_DIR$/05-demo-test-solution/test-unit/pom.xml" />
+        <option value="$PROJECT_DIR$/05-demo-test-solution/test-devservices/pom.xml" />
+        <option value="$PROJECT_DIR$/09-reactive-eda-start/joedayz-bank/pom.xml" />
+        <option value="$PROJECT_DIR$/09-reactive-eda-start/fraud-detector/pom.xml" />
+        <option value="$PROJECT_DIR$/11-secure-jwt-solution/expenses/pom.xml" />
+        <option value="$PROJECT_DIR$/12-secure-sso-solution/expense/pom.xml" />
+        <option value="$PROJECT_DIR$/13-secure-review-start/quarkus-conference/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-start/adder/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-start/solver/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-start/multiplier/pom.xml" />
+        <option value="$PROJECT_DIR$/01-develop-config-start/pom.xml" />
+        <option value="$PROJECT_DIR$/04-develop-native-start/expense-function/pom.xml" />
+        <option value="$PROJECT_DIR$/04-develop-review-start/develop-review/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-solution/session/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-solution/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/06-test-review-solution/schedule/pom.xml" />
+        <option value="$PROJECT_DIR$/21-monitor-review-start/sessions/pom.xml" />
+        <option value="$PROJECT_DIR$/21-monitor-review-start/speakers/pom.xml" />
+        <option value="$PROJECT_DIR$/02-develop-rest-solution/expense-client/pom.xml" />
+        <option value="$PROJECT_DIR$/02-develop-rest-solution/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/03-develop-persist-start/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/09-reactive-eda-solution/joedayz-bank/pom.xml" />
+        <option value="$PROJECT_DIR$/09-reactive-eda-solution/fraud-detector/pom.xml" />
+        <option value="$PROJECT_DIR$/10-reactive-review-start/reactive-speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/18-monitor-logging-start/expenses/pom.xml" />
+        <option value="$PROJECT_DIR$/19-monitor-metrics-start/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/23-async-virtual-threads/pom.xml" />
+        <option value="$PROJECT_DIR$/08-reactive-develop-start/suggestions/pom.xml" />
+        <option value="$PROJECT_DIR$/13-secure-review-solution/quarkus-conference/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/16-tolerance-health-start/quarkus-calculator/pom.xml" />
+        <option value="$PROJECT_DIR$/17-tolerance-review-start/session/pom.xml" />
+        <option value="$PROJECT_DIR$/17-tolerance-review-start/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-solution/adder/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-solution/solver/pom.xml" />
+        <option value="$PROJECT_DIR$/20-monitor-trace-solution/multiplier/pom.xml" />
+        <option value="$PROJECT_DIR$/22-student-management-api/pom.xml" />
+        <option value="$PROJECT_DIR$/01-develop-config-solution/pom.xml" />
+        <option value="$PROJECT_DIR$/04-develop-native-solution/expense-function/pom.xml" />
+        <option value="$PROJECT_DIR$/04-develop-review-solution/develop-review/pom.xml" />
+        <option value="$PROJECT_DIR$/21-monitor-review-solution/sessions/pom.xml" />
+        <option value="$PROJECT_DIR$/21-monitor-review-solution/speakers/pom.xml" />
+        <option value="$PROJECT_DIR$/comprehensive-review-start/parks/pom.xml" />
+        <option value="$PROJECT_DIR$/comprehensive-review-start/weather/pom.xml" />
+        <option value="$PROJECT_DIR$/03-develop-persist-solution/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/10-reactive-review-solution/reactive-speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/15-tolerance-policies-start/monitor/pom.xml" />
+        <option value="$PROJECT_DIR$/18-monitor-logging-solution/expenses/pom.xml" />
+        <option value="$PROJECT_DIR$/19-monitor-metrics-solution/expense-service/pom.xml" />
+        <option value="$PROJECT_DIR$/08-reactive-develop-solution/suggestions/pom.xml" />
+        <option value="$PROJECT_DIR$/16-tolerance-health-solution/quarkus-calculator/pom.xml" />
+        <option value="$PROJECT_DIR$/17-tolerance-review-solution/session/pom.xml" />
+        <option value="$PROJECT_DIR$/17-tolerance-review-solution/speaker/pom.xml" />
+        <option value="$PROJECT_DIR$/comprehensive-review-solution/parks/pom.xml" />
+        <option value="$PROJECT_DIR$/comprehensive-review-solution/weather/pom.xml" />
+        <option value="$PROJECT_DIR$/07-reactive-architecture-start/products/pom.xml" />
+        <option value="$PROJECT_DIR$/15-tolerance-policies-solution/monitor/pom.xml" />
+        <option value="$PROJECT_DIR$/07-reactive-architecture-solution/products/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="graalvm-26" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
