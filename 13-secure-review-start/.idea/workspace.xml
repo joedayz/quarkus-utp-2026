@@ -4,22 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3a9ddef7-ed50-4b97-ba2c-a803463d868d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js.LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js.LICENSE.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.bundle.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/dist/main.css.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/components/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/components/Dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/services/SpeakersService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/services/SpeakersService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/services/keycloak.js" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker-dashboard/src/app/services/keycloak.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker/src/main/java/com/bcp/SpeakerResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker/src/main/java/com/bcp/SpeakerResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker/src/test/java/com/bcp/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker/src/test/java/com/bcp/ConfigTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quarkus-conference/speaker/src/test/java/com/bcp/SpeakerResourceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/quarkus-conference/speaker/src/test/java/com/bcp/SpeakerResourceTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="3a9ddef7-ed50-4b97-ba2c-a803463d868d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,6 +12,10 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -37,21 +26,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;08-secure-review-solution&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="speaker" type="QuarkusRunConfigurationType" factoryName="Quarkus" nameIsGenerated="true">
       <module name="speaker" />

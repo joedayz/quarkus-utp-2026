@@ -7,73 +7,100 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="test-mock" />
+        <module name="01-demo-config-solution" />
+        <module name="suggestions (2)" />
+        <module name="reactive-speaker" />
+        <module name="quarkus-conference (4)" />
+        <module name="weather" />
+        <module name="quarkus-calculator" />
+        <module name="24-aws-genai-bedrock" />
+        <module name="sessions" />
+        <module name="expense-service (1)" />
+        <module name="quarkus-calculator (2)" />
+        <module name="suggestions (1)" />
+        <module name="expense-function" />
+        <module name="speakers (2)" />
+        <module name="sessions (1)" />
+        <module name="test-unit" />
+        <module name="quarkus-conference (3)" />
+        <module name="expense-service (2)" />
+        <module name="test-devservices (2)" />
+        <module name="quarkus-conference" />
+        <module name="microservice-session" />
+        <module name="microservice-speaker (3)" />
+        <module name="weather (2)" />
+        <module name="test-devservices" />
+        <module name="expense-service" />
+        <module name="parks (2)" />
+        <module name="quarkus-calculator (1)" />
+        <module name="products" />
+        <module name="reactive-speaker (1)" />
+        <module name="sessions (2)" />
+        <module name="expense-service (7)" />
+        <module name="weather (1)" />
+        <module name="expense-restful-service (1) (com.bcp.training.expenses)" />
+        <module name="test-unit (2)" />
+        <module name="expense-restful-service (2) (edu.utp.training)" />
+        <module name="expense-client" />
+        <module name="test-devservices (1)" />
+        <module name="multiplier (1)" />
+        <module name="microservices-speaker" />
+        <module name="reactive-speaker (2)" />
+        <module name="monitor (1)" />
         <module name="expense-client (2)" />
         <module name="speaker (1)" />
         <module name="microservice-speaker (1)" />
         <module name="microservice-schedule" />
         <module name="test-unit (1)" />
         <module name="adder" />
+        <module name="expenses (2)" />
         <module name="demo-native" />
-        <module name="01-demo-config-solution" />
+        <module name="multiplier (2)" />
         <module name="parks" />
         <module name="test-mock (1)" />
         <module name="joedayz-bank (1)" />
-        <module name="reactive-speaker" />
+        <module name="monitor (2)" />
         <module name="speakers" />
-        <module name="weather" />
+        <module name="expenses-service (2)" />
         <module name="22-student-management-api" />
         <module name="expense-client (1)" />
         <module name="solver" />
         <module name="expense-service (5)" />
-        <module name="quarkus-calculator" />
-        <module name="24-aws-genai-bedrock" />
-        <module name="sessions" />
-        <module name="expense-service (1)" />
+        <module name="expense-client (3)" />
+        <module name="expense-restful-service (1) (edu.utp.training.expenses)" />
+        <module name="solver (2)" />
         <module name="multiplier" />
         <module name="fraud-detector (1)" />
         <module name="microservice-speaker (2)" />
+        <module name="speaker (2)" />
         <module name="parks (1)" />
-        <module name="suggestions (1)" />
-        <module name="expense-function" />
         <module name="adder (1)" />
         <module name="fraud-detector" />
-        <module name="sessions (1)" />
-        <module name="test-unit" />
+        <module name="test-mock (2)" />
         <module name="speaker" />
-        <module name="quarkus-conference (3)" />
         <module name="expense-service (6)" />
-        <module name="expense-service (2)" />
         <module name="expenses" />
         <module name="expenses-service" />
-        <module name="quarkus-conference" />
-        <module name="microservice-session" />
         <module name="solver (1)" />
         <module name="session" />
         <module name="microservice-schedule (1)" />
+        <module name="fraud-detector (2)" />
         <module name="expense-restfult-service" />
-        <module name="test-devservices" />
-        <module name="expense-service" />
-        <module name="quarkus-calculator (1)" />
-        <module name="products" />
+        <module name="products (2)" />
+        <module name="adder (2)" />
         <module name="quarkus-conference (2)" />
-        <module name="reactive-speaker (1)" />
         <module name="microservice-speaker" />
         <module name="speakers (1)" />
         <module name="expense-service (3)" />
-        <module name="weather (1)" />
         <module name="joedayz-bank" />
-        <module name="expense-restful-service (1) (com.bcp.training.expenses)" />
         <module name="expense-validator" />
+        <module name="microservice-schedule (2)" />
         <module name="monitor" />
         <module name="23-async-virtual-threads" />
-        <module name="expense-client" />
         <module name="expenses (1)" />
-        <module name="test-devservices (1)" />
-        <module name="multiplier (1)" />
         <module name="products (1)" />
         <module name="quarkus-conference (1)" />
-        <module name="microservices-speaker" />
-        <module name="monitor (1)" />
+        <module name="joedayz-bank (2)" />
         <module name="expense-restful-service" />
         <module name="expenses-service (1)" />
         <module name="suggestions" />
@@ -89,13 +116,17 @@
       <module name="24-aws-genai-bedrock" options="-parameters" />
       <module name="adder" options="-parameters" />
       <module name="adder (1)" options="-parameters" />
+      <module name="adder (2)" options="-parameters" />
       <module name="demo-native" options="-parameters" />
       <module name="expense-client" options="-parameters" />
       <module name="expense-client (1)" options="-parameters" />
       <module name="expense-client (2)" options="-parameters" />
+      <module name="expense-client (3)" options="-parameters" />
       <module name="expense-function" options="-parameters" />
       <module name="expense-restful-service" options="-parameters" />
       <module name="expense-restful-service (1) (com.bcp.training.expenses)" options="-parameters" />
+      <module name="expense-restful-service (1) (edu.utp.training.expenses)" options="-parameters" />
+      <module name="expense-restful-service (2) (edu.utp.training)" options="-parameters" />
       <module name="expense-restfult-service" options="-parameters" />
       <module name="expense-service" options="-parameters" />
       <module name="expense-service (1)" options="-parameters" />
@@ -104,57 +135,80 @@
       <module name="expense-service (4)" options="-parameters" />
       <module name="expense-service (5)" options="-parameters" />
       <module name="expense-service (6)" options="-parameters" />
+      <module name="expense-service (7)" options="-parameters" />
       <module name="expense-validator" options="-parameters" />
       <module name="expenses" options="-parameters" />
       <module name="expenses (1)" options="-parameters" />
+      <module name="expenses (2)" options="-parameters" />
       <module name="expenses-service" options="-parameters" />
       <module name="expenses-service (1)" options="-parameters" />
+      <module name="expenses-service (2)" options="-parameters" />
       <module name="fraud-detector" options="-parameters" />
       <module name="fraud-detector (1)" options="-parameters" />
+      <module name="fraud-detector (2)" options="-parameters" />
       <module name="joedayz-bank" options="-parameters" />
       <module name="joedayz-bank (1)" options="-parameters" />
+      <module name="joedayz-bank (2)" options="-parameters" />
       <module name="microservice-schedule" options="-parameters" />
       <module name="microservice-schedule (1)" options="-parameters" />
+      <module name="microservice-schedule (2)" options="-parameters" />
       <module name="microservice-session" options="-parameters" />
       <module name="microservice-speaker" options="-parameters" />
       <module name="microservice-speaker (1)" options="-parameters" />
       <module name="microservice-speaker (2)" options="-parameters" />
+      <module name="microservice-speaker (3)" options="-parameters" />
       <module name="microservices-speaker" options="-parameters" />
       <module name="monitor" options="-parameters" />
       <module name="monitor (1)" options="-parameters" />
+      <module name="monitor (2)" options="-parameters" />
       <module name="multiplier" options="-parameters" />
       <module name="multiplier (1)" options="-parameters" />
+      <module name="multiplier (2)" options="-parameters" />
       <module name="parks" options="-parameters" />
       <module name="parks (1)" options="-parameters" />
+      <module name="parks (2)" options="-parameters" />
       <module name="products" options="-parameters" />
       <module name="products (1)" options="-parameters" />
+      <module name="products (2)" options="-parameters" />
       <module name="quarkus-calculator" options="-parameters" />
       <module name="quarkus-calculator (1)" options="-parameters" />
+      <module name="quarkus-calculator (2)" options="-parameters" />
       <module name="quarkus-conference" options="-parameters" />
       <module name="quarkus-conference (1)" options="-parameters" />
       <module name="quarkus-conference (2)" options="-parameters" />
       <module name="quarkus-conference (3)" options="-parameters" />
+      <module name="quarkus-conference (4)" options="-parameters" />
       <module name="reactive-speaker" options="-parameters" />
       <module name="reactive-speaker (1)" options="-parameters" />
+      <module name="reactive-speaker (2)" options="-parameters" />
       <module name="session" options="-parameters" />
       <module name="sessions" options="-parameters" />
       <module name="sessions (1)" options="-parameters" />
+      <module name="sessions (2)" options="-parameters" />
       <module name="solver" options="-parameters" />
       <module name="solver (1)" options="-parameters" />
+      <module name="solver (2)" options="-parameters" />
       <module name="speaker" options="-parameters" />
       <module name="speaker (1)" options="-parameters" />
+      <module name="speaker (2)" options="-parameters" />
       <module name="speakers" options="-parameters" />
       <module name="speakers (1)" options="-parameters" />
+      <module name="speakers (2)" options="-parameters" />
       <module name="suggestions" options="-parameters" />
       <module name="suggestions (1)" options="-parameters" />
+      <module name="suggestions (2)" options="-parameters" />
       <module name="test-devservices" options="-parameters" />
       <module name="test-devservices (1)" options="-parameters" />
+      <module name="test-devservices (2)" options="-parameters" />
       <module name="test-mock" options="-parameters" />
       <module name="test-mock (1)" options="-parameters" />
+      <module name="test-mock (2)" options="-parameters" />
       <module name="test-unit" options="-parameters" />
       <module name="test-unit (1)" options="-parameters" />
+      <module name="test-unit (2)" options="-parameters" />
       <module name="weather" options="-parameters" />
       <module name="weather (1)" options="-parameters" />
+      <module name="weather (2)" options="-parameters" />
     </option>
   </component>
 </project>
