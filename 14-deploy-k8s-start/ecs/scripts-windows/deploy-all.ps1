@@ -74,7 +74,7 @@ $serviceTaskDef = @"
         }
       ],
       "healthCheck": {
-        "command": ["CMD-SHELL", "wget -q -O- http://localhost:8080/q/health/live || exit 1"],
+"command": ["CMD-SHELL", "curl -sf http://localhost:8080/q/health/live || exit 1"],
         "interval": 30,
         "timeout": 5,
         "retries": 3,
@@ -131,7 +131,7 @@ $clientTaskDef = @"
         }
       ],
       "healthCheck": {
-        "command": ["CMD-SHELL", "wget -q -O- http://localhost:8080/q/health/live || exit 1"],
+"command": ["CMD-SHELL", "curl -sf http://localhost:8080/q/health/live || exit 1"],
         "interval": 30,
         "timeout": 5,
         "retries": 3,
