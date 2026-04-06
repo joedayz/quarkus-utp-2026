@@ -95,10 +95,11 @@ if (-not $defaultVpcId -or $defaultVpcId -eq "None") {
 }
 Write-Host "VPC: $defaultVpcId"
 
+# Filtrar subnets que NO estén en Local Zones (Fargate no las soporta)
 $subnetIds = aws ec2 describe-subnets `
     --filters "Name=vpc-id,Values=$defaultVpcId" `
     --region $AwsRegion `
-    --query 'Subnets[*].SubnetId' --output text
+    --query "Subnets[?!contains(AvailabilityZone, '-lim-') && !contains(AvailabilityZone, '-bog-') && !contains(AvailabilityZone, '-scl-')].SubnetId" --output text
 $subnetIdsCsv = $subnetIds -replace "`t", ","
 Write-Host "Subnets: $subnetIdsCsv"
 Write-Host ""

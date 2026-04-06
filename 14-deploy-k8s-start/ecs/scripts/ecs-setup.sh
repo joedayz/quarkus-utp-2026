@@ -87,10 +87,12 @@ if [ "${DEFAULT_VPC_ID}" = "None" ] || [ -z "${DEFAULT_VPC_ID}" ]; then
 fi
 echo "VPC: ${DEFAULT_VPC_ID}"
 
+# Filtrar subnets que NO estén en Local Zones (Fargate no las soporta)
 SUBNET_IDS=$(aws ec2 describe-subnets \
   --filters "Name=vpc-id,Values=${DEFAULT_VPC_ID}" \
   --region "${AWS_REGION}" \
-  --query 'Subnets[*].SubnetId' --output text | tr '\t' ',')
+  --query 'Subnets[?!contains(AvailabilityZone, `-lim-`) && !contains(AvailabilityZone, `-bog-`) && !contains(AvailabilityZone, `-scl-`)].SubnetId' \
+  --output text | tr '\t' ',')
 echo "Subnets: ${SUBNET_IDS}"
 echo ""
 
