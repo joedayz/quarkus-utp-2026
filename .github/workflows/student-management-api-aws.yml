@@ -100,6 +100,22 @@ jobs:
           docker push "${REGISTRY}/${ECR_REPOSITORY}:latest"
           echo "uri=${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
+      # amazon-ecs-deploy-task-definition solo actualiza un servicio ya creado; si falta, el error de la acción es poco claro.
+      - name: Comprobar que el servicio ECS existe (ACTIVE)
+        if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+        run: |
+          STATUS=$(aws ecs describe-services --cluster "$ECS_CLUSTER" --services "$ECS_SERVICE" --region "$AWS_REGION" \
+            --query 'services[0].status' --output text)
+          if [ "$STATUS" = "ACTIVE" ]; then
+            echo "Servicio ECS listo: ${ECS_CLUSTER} / ${ECS_SERVICE}"
+            exit 0
+          fi
+          echo "::error::No hay servicio ECS activo con ese nombre (cluster=${ECS_CLUSTER}, service=${ECS_SERVICE}, status=${STATUS:-vacío}). La acción de despliegue no crea el servicio. Desde la carpeta 22-student-management-api-solution, con AWS CLI configurado: publica imagen a ECR (workflow «Solo ECR» o push) y ejecuta ./deploy/aws-bootstrap.sh --deploy-service, o ./deploy/aws-bootstrap.sh sin --infra-only. Variables GitHub: ECS_CLUSTER y ECS_SERVICE deben coincidir con lo creado en AWS. Ver 22-student-management-api-solution/README.md (demo AWS)."
+          exit 1
+
       - name: Prepare ECS task definition
         id: prep-taskdef
         if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
