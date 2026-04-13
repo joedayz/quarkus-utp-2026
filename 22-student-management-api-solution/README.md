@@ -16,7 +16,7 @@ Task definition plantilla: [`deploy/ecs-task-definition.json`](deploy/ecs-task-d
 | `./mvnw package -DskipTests`, `docker build` con `src/main/docker/Dockerfile.jvm` | No ejecuta tests en CI |
 | Crea el repositorio **ECR** si no existe; `docker push` `:GITHUB_SHA` y `:latest` | No crea **cluster** ni **servicio** ECS ni ALB (eso es local/consola) |
 | Sustituye `__AWS_ACCOUNT_ID__` y `__AWS_REGION__` en la task definition | No ejecuta **`aws-bootstrap`** (RDS/EC2 lo creas en tu máquina con ese script) |
-| Si la Variable **`QUARKUS_DATASOURCE_JDBC_URL`** está definida, **añade** JDBC al JSON (usuario por Variable `QUARKUS_DATASOURCE_USERNAME` o `student`; contraseña vía Secret **`STUDENT_DB_PASSWORD`** si existe) | — |
+| **Exige** Variable **`QUARKUS_DATASOURCE_JDBC_URL`** y Secret **`STUDENT_DB_PASSWORD`** antes de desplegar en ECS (si faltan, el job falla con mensaje claro; antes la task arrancaba sin JDBC y el contenedor salía con **exit 1**). Añade JDBC al JSON; usuario por `QUARKUS_DATASOURCE_USERNAME` o `student`. Para host **RDS** añade `sslmode=require` al URL automáticamente si no viene en la variable. | — |
 | Registra una **nueva revisión** de task definition e inyecta la imagen ECR; `ecs UpdateService` + **wait for service stability** | — |
 
 Si el servicio no estabiliza (health checks fallando, tarea reiniciando), el job **falla** al final aunque ECR haya recibido la imagen.
@@ -99,18 +99,18 @@ Marca esto **antes** de ejecutar el workflow con **ECR + ECS** (sin «Solo ECR»
 5. **`deploy/ecs-task-definition.json` en el repo**  
    - `family` = `student-management-api` (debe coincidir con la familia que usa tu servicio).  
    - En `containerDefinitions[0].environment` (o `secrets`) están **`QUARKUS_DATASOURCE_JDBC_URL`**, usuario y contraseña de **prod**, coherentes con Quarkus 3, por ejemplo:  
-     - `QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://HOST_RDS:5432/NOMBRE_BD`  
+     - `QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://HOST_RDS:5432/NOMBRE_BD` (con RDS el workflow puede añadir `?sslmode=require` si falta)  
      - `QUARKUS_DATASOURCE_USERNAME=...`  
-     - `QUARKUS_DATASOURCE_PASSWORD=...` **o** referencia a **Secrets Manager** en `secrets` (recomendado).  
+     - `STUDENT_DB_PASSWORD=...` (nombre que usa esta solution en `application.properties`) **o** referencia a **Secrets Manager** en `secrets` (recomendado en producción).  
    - Sin JDBC válido, la app no arranca bien y el **health check** `GET /q/health/live` falla → **stability timeout**.
 
 6. **Primera vez: el servicio ECS debe existir antes del pipeline completo**  
    El Action **no** crea el servicio. Opciones: usar **`deploy/aws-bootstrap.sh --deploy-service`** (o `.ps1 -DeployService`) después de la primera subida a ECR, **o** registrar la task definition y crear el servicio a mano en la consola/AWS CLI. A partir de ahí, cada ejecución del workflow registra **nueva revisión** y actualiza el servicio.
 
 7. **GitHub — Secrets y Variables** (pestaña *Actions*)  
-   - Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`. Opcional: **`STUDENT_DB_PASSWORD`** (si defines **`QUARKUS_DATASOURCE_JDBC_URL`**, el workflow inyecta JDBC en la task definition).  
-   - Variables: **`ECS_CLUSTER`** y **`ECS_SERVICE`** (obligatorias si quieres ECS en ejecución manual sin «Solo ECR»).  
-   - Opcionales: `AWS_REGION`, `ECR_REPOSITORY`; **`QUARKUS_DATASOURCE_JDBC_URL`**, **`QUARKUS_DATASOURCE_USERNAME`** (si la URL está definida, Actions añade JDBC al JSON antes del deploy).
+   - Secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, **`STUDENT_DB_PASSWORD`** (obligatorio para pipeline con ECS: sin él la app usa `change-me` y RDS rechaza la conexión).  
+   - Variables: **`ECS_CLUSTER`** y **`ECS_SERVICE`** (obligatorias si quieres ECS en ejecución manual sin «Solo ECR»); **`QUARKUS_DATASOURCE_JDBC_URL`** (obligatoria para ECS: sin ella el workflow no inyecta JDBC y el contenedor falla al arrancar).  
+   - Opcionales: `AWS_REGION`, `ECR_REPOSITORY`; **`QUARKUS_DATASOURCE_USERNAME`** (por defecto `student`).
 
 8. **Health check del contenedor**  
    - La imagen JVM incluye `curl`; el task definition ya usa `curl -sf http://localhost:8080/q/health/live`.  

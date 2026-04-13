@@ -7,7 +7,8 @@
 #              STUDENT_DB_PASSWORD — opcional; si está definido, se inyecta en la task definition junto con las variables JDBC.
 #   Variables: AWS_REGION, ECR_REPOSITORY (opcionales, hay valores por defecto)
 #              ECS_CLUSTER, ECS_SERVICE — obligatorias para la demo completa con ECS (ver paso de verificación en ejecución manual).
-#              QUARKUS_DATASOURCE_JDBC_URL, QUARKUS_DATASOURCE_USERNAME — opcionales; si JDBC_URL está definido, el workflow añade JDBC al JSON antes de desplegar.
+#              QUARKUS_DATASOURCE_JDBC_URL, QUARKUS_DATASOURCE_USERNAME — obligatorias para desplegar en ECS (sin JDBC la app prod termina en exit 1).
+#              STUDENT_DB_PASSWORD (Secret) — obligatorio para ECS con RDS (sin él se usa change-me y la auth falla).
 #
 # En ejecución manual sin «Solo ECR»: el workflow falla si faltan ECS_CLUSTER / ECS_SERVICE (para no confundir la demo con solo ECR).
 # Push a main: si faltan esas variables, solo se publica en ECR (útil en forks); en el curso UTP deben estar definidas para desplegar en ECS.
@@ -116,6 +117,22 @@ jobs:
           echo "::error::No hay servicio ECS activo con ese nombre (cluster=${ECS_CLUSTER}, service=${ECS_SERVICE}, status=${STATUS:-vacío}). La acción de despliegue no crea el servicio. Desde la carpeta 22-student-management-api-solution, con AWS CLI configurado: publica imagen a ECR (workflow «Solo ECR» o push) y ejecuta ./deploy/aws-bootstrap.sh --deploy-service, o ./deploy/aws-bootstrap.sh sin --infra-only. Variables GitHub: ECS_CLUSTER y ECS_SERVICE deben coincidir con lo creado en AWS. Ver 22-student-management-api-solution/README.md (demo AWS)."
           exit 1
 
+      - name: Comprobar JDBC y contraseña para ECS (prod)
+        if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
+        env:
+          JDBC_URL: ${{ vars.QUARKUS_DATASOURCE_JDBC_URL }}
+          STUDENT_DB_PASSWORD: ${{ secrets.STUDENT_DB_PASSWORD }}
+        run: |
+          if [ -z "$JDBC_URL" ]; then
+            echo "::error::QUARKUS_DATASOURCE_JDBC_URL no está definida (Settings → Secrets and variables → Actions → Variables). Sin ella el workflow no inyecta JDBC en la task: Quarkus en prod no arranca y ECS muestra el contenedor con exit code 1. Copia el valor desde 22-student-management-api-solution/deploy/rds-credentials.env (tras aws-bootstrap.sh --with-rds) o desde la consola RDS."
+            exit 1
+          fi
+          if [ -z "$STUDENT_DB_PASSWORD" ]; then
+            echo "::error::STUDENT_DB_PASSWORD no está definido (Actions → Secrets). El perfil prod usa esta contraseña para PostgreSQL; sin el secret el valor por defecto no coincide con RDS y el contenedor falla al arrancar."
+            exit 1
+          fi
+          echo "Variables JDBC y secret de base comprobados."
+
       - name: Prepare ECS task definition
         id: prep-taskdef
         if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
@@ -130,6 +147,15 @@ jobs:
               -e "s/__AWS_REGION__/${AWS_REGION}/g" \
               deploy/ecs-task-definition.json > "${RUNNER_TEMP}/ecs-task-definition.json"
           if [ -n "$QUARKUS_JDBC_URL" ]; then
+            case "$QUARKUS_JDBC_URL" in
+              *rds.amazonaws.com*)
+                case "$QUARKUS_JDBC_URL" in
+                  *sslmode=*) ;;
+                  *\?*) QUARKUS_JDBC_URL="${QUARKUS_JDBC_URL}&sslmode=require" ;;
+                  *)    QUARKUS_JDBC_URL="${QUARKUS_JDBC_URL}?sslmode=require" ;;
+                esac
+                ;;
+            esac
             U="${QUARKUS_JDBC_USER:-student}"
             # Objetos con claves entre comillas (jq rechaza {name:...} / value como identificador en este contexto).
             jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${STUDENT_DB_PASSWORD:-}" \
