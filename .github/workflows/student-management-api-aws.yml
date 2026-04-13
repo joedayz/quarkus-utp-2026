@@ -1,0 +1,145 @@
+# Demo oficial del mini‑proyecto (Módulo 6): GitHub Actions → Amazon ECR → Amazon ECS (Fargate).
+#
+# Flujo: compilar Quarkus (JVM), construir imagen Docker, publicar en ECR y registrar/desplegar nueva task definition en ECS.
+#
+# GitHub → Settings → Secrets and variables → Actions:
+#   Secrets:   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY (IAM: ECR push/pull; ECS RegisterTaskDefinition/UpdateService; logs; PassRole al execution role).
+#              STUDENT_DB_PASSWORD — opcional; si está definido, se inyecta en la task definition junto con las variables JDBC.
+#   Variables: AWS_REGION, ECR_REPOSITORY (opcionales, hay valores por defecto)
+#              ECS_CLUSTER, ECS_SERVICE — obligatorias para la demo completa con ECS (ver paso de verificación en ejecución manual).
+#              QUARKUS_DATASOURCE_JDBC_URL, QUARKUS_DATASOURCE_USERNAME — opcionales; si JDBC_URL está definido, el workflow añade JDBC al JSON antes de desplegar.
+#
+# En ejecución manual sin «Solo ECR»: el workflow falla si faltan ECS_CLUSTER / ECS_SERVICE (para no confundir la demo con solo ECR).
+# Push a main: si faltan esas variables, solo se publica en ECR (útil en forks); en el curso UTP deben estar definidas para desplegar en ECS.
+
+name: Student Management API — Demo AWS (GitHub Actions → ECR → ECS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_ecs:
+        description: "Solo ECR (omitir ECS; la demo del curso suele dejar esto en false)"
+        type: boolean
+        default: false
+  push:
+    branches:
+      - main
+    paths:
+      - "22-student-management-api-solution/**"
+      - ".github/workflows/student-management-api-aws.yml"
+
+permissions:
+  contents: read
+
+env:
+  PROJECT_DIR: 22-student-management-api-solution
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY || 'student-management-api' }}
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: student-management-api-aws-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verificar variables ECS (demo ECR + ECS)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true' }}
+        env:
+          ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+          ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+        run: |
+          if [ -z "$ECS_CLUSTER" ] || [ -z "$ECS_SERVICE" ]; then
+            echo "::error::Para la demo con GitHub Actions + ECR + ECS, define las variables de repositorio ECS_CLUSTER y ECS_SERVICE (Settings → Secrets and variables → Actions → Variables). Si solo quieres subir la imagen a ECR, vuelve a ejecutar el workflow y marca «Solo ECR»."
+            exit 1
+          fi
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: ${{ env.PROJECT_DIR }}/pom.xml
+
+      - name: Maven package
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          chmod +x mvnw
+          ./mvnw -B -ntp package -DskipTests
+
+      - name: Ensure ECR repository exists
+        run: |
+          aws ecr describe-repositories --repository-names "${ECR_REPOSITORY}" --region "${AWS_REGION}" \
+            || aws ecr create-repository --repository-name "${ECR_REPOSITORY}" --region "${AWS_REGION}"
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        id: image
+        working-directory: ${{ env.PROJECT_DIR }}
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f src/main/docker/Dockerfile.jvm -t "${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}" -t "${REGISTRY}/${ECR_REPOSITORY}:latest" .
+          docker push "${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          docker push "${REGISTRY}/${ECR_REPOSITORY}:latest"
+          echo "uri=${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare ECS task definition
+        id: prep-taskdef
+        if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
+        working-directory: ${{ env.PROJECT_DIR }}
+        env:
+          QUARKUS_JDBC_URL: ${{ vars.QUARKUS_DATASOURCE_JDBC_URL }}
+          QUARKUS_JDBC_USER: ${{ vars.QUARKUS_DATASOURCE_USERNAME }}
+          STUDENT_DB_PASSWORD: ${{ secrets.STUDENT_DB_PASSWORD }}
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          sed -e "s/__AWS_ACCOUNT_ID__/${ACCOUNT_ID}/g" \
+              -e "s/__AWS_REGION__/${AWS_REGION}/g" \
+              deploy/ecs-task-definition.json > "${RUNNER_TEMP}/ecs-task-definition.json"
+          if [ -n "$QUARKUS_JDBC_URL" ]; then
+            U="${QUARKUS_JDBC_USER:-student}"
+            jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${STUDENT_DB_PASSWORD:-}" '
+              .containerDefinitions[0].environment |= (
+                (map(select(.name != "QUARKUS_DATASOURCE_JDBC_URL" and .name != "QUARKUS_DATASOURCE_USERNAME" and .name != "STUDENT_DB_PASSWORD"))
+                + [{name:"QUARKUS_DATASOURCE_JDBC_URL",value:$url},{name:"QUARKUS_DATASOURCE_USERNAME",value:$user}]
+                + (if ($pass | length) > 0 then [{name:"STUDENT_DB_PASSWORD",value:$pass}] else [] end)
+              )
+            ' "${RUNNER_TEMP}/ecs-task-definition.json" > "${RUNNER_TEMP}/ecs-task-definition.jdbc.json"
+            mv "${RUNNER_TEMP}/ecs-task-definition.jdbc.json" "${RUNNER_TEMP}/ecs-task-definition.json"
+          fi
+          echo "file=${RUNNER_TEMP}/ecs-task-definition.json" >> "$GITHUB_OUTPUT"
+
+      - name: Render Amazon ECS task definition (inject image)
+        id: render
+        if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ steps.prep-taskdef.outputs.file }}
+          container-name: student-api
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy Amazon ECS task definition
+        if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: ${{ vars.ECS_SERVICE }}
+          cluster: ${{ vars.ECS_CLUSTER }}
+          wait-for-service-stability: true
