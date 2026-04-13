@@ -8,7 +8,7 @@
 #   Variables: AWS_REGION, ECR_REPOSITORY (opcionales, hay valores por defecto)
 #              ECS_CLUSTER, ECS_SERVICE — obligatorias para la demo completa con ECS (ver paso de verificación en ejecución manual).
 #              QUARKUS_DATASOURCE_JDBC_URL, QUARKUS_DATASOURCE_USERNAME — obligatorias para desplegar en ECS (sin JDBC la app prod termina en exit 1).
-#              STUDENT_DB_PASSWORD (Secret) — obligatorio para ECS con RDS (sin él se usa change-me y la auth falla).
+#              STUDENT_DB_PASSWORD — Secret (recomendado) o Variable del mismo nombre; sin valor el contenedor no autentica contra RDS.
 #
 # En ejecución manual sin «Solo ECR»: el workflow falla si faltan ECS_CLUSTER / ECS_SERVICE (para no confundir la demo con solo ECR).
 # Push a main: si faltan esas variables, solo se publica en ECR (útil en forks); en el curso UTP deben estar definidas para desplegar en ECS.
@@ -121,17 +121,23 @@ jobs:
         if: ${{ vars.ECS_CLUSTER != '' && vars.ECS_SERVICE != '' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ecs != 'true')) }}
         env:
           JDBC_URL: ${{ vars.QUARKUS_DATASOURCE_JDBC_URL }}
-          STUDENT_DB_PASSWORD: ${{ secrets.STUDENT_DB_PASSWORD }}
+          STUDENT_DB_PASSWORD_SECRET: ${{ secrets.STUDENT_DB_PASSWORD }}
+          STUDENT_DB_PASSWORD_VAR: ${{ vars.STUDENT_DB_PASSWORD }}
         run: |
           if [ -z "$JDBC_URL" ]; then
             echo "::error::QUARKUS_DATASOURCE_JDBC_URL no está definida (Settings → Secrets and variables → Actions → Variables). Sin ella el workflow no inyecta JDBC en la task: Quarkus en prod no arranca y ECS muestra el contenedor con exit code 1. Copia el valor desde 22-student-management-api-solution/deploy/rds-credentials.env (tras aws-bootstrap.sh --with-rds) o desde la consola RDS."
             exit 1
           fi
-          if [ -z "$STUDENT_DB_PASSWORD" ]; then
-            echo "::error::STUDENT_DB_PASSWORD no está definido (Actions → Secrets). El perfil prod usa esta contraseña para PostgreSQL; sin el secret el valor por defecto no coincide con RDS y el contenedor falla al arrancar."
+          PASS="${STUDENT_DB_PASSWORD_SECRET}"
+          if [ -z "$PASS" ]; then PASS="${STUDENT_DB_PASSWORD_VAR}"; fi
+          if [ -z "$PASS" ]; then
+            echo "::error::STUDENT_DB_PASSWORD no está definido ni como **Secret** ni como **Variable** (mismo nombre). El perfil prod lo necesita para PostgreSQL; sin él RDS rechaza la conexión (exit 1 en ECS)."
             exit 1
           fi
-          echo "Variables JDBC y secret de base comprobados."
+          if [ -z "$STUDENT_DB_PASSWORD_SECRET" ] && [ -n "$STUDENT_DB_PASSWORD_VAR" ]; then
+            echo "::warning::Tienes STUDENT_DB_PASSWORD solo en **Variables** (visible en la UI del repo). Para el curso puede valer; en serio, créalo como **Secret** y borra la variable."
+          fi
+          echo "JDBC y contraseña de base comprobados."
 
       - name: Prepare ECS task definition
         id: prep-taskdef
@@ -140,7 +146,8 @@ jobs:
         env:
           QUARKUS_JDBC_URL: ${{ vars.QUARKUS_DATASOURCE_JDBC_URL }}
           QUARKUS_JDBC_USER: ${{ vars.QUARKUS_DATASOURCE_USERNAME }}
-          STUDENT_DB_PASSWORD: ${{ secrets.STUDENT_DB_PASSWORD }}
+          STUDENT_DB_PASSWORD_SECRET: ${{ secrets.STUDENT_DB_PASSWORD }}
+          STUDENT_DB_PASSWORD_VAR: ${{ vars.STUDENT_DB_PASSWORD }}
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           sed -e "s/__AWS_ACCOUNT_ID__/${ACCOUNT_ID}/g" \
@@ -157,8 +164,10 @@ jobs:
                 ;;
             esac
             U="${QUARKUS_JDBC_USER:-student}"
+            PASS="${STUDENT_DB_PASSWORD_SECRET}"
+            if [ -z "$PASS" ]; then PASS="${STUDENT_DB_PASSWORD_VAR}"; fi
             # Objetos con claves entre comillas (jq rechaza {name:...} / value como identificador en este contexto).
-            jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${STUDENT_DB_PASSWORD:-}" \
+            jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${PASS:-}" \
               '.containerDefinitions[0].environment |= (
                 (map(select(.name != "QUARKUS_DATASOURCE_JDBC_URL" and .name != "QUARKUS_DATASOURCE_USERNAME" and .name != "STUDENT_DB_PASSWORD")))
                 + [{"name":"QUARKUS_DATASOURCE_JDBC_URL","value":$url},{"name":"QUARKUS_DATASOURCE_USERNAME","value":$user}]
