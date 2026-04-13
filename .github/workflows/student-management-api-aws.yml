@@ -115,13 +115,14 @@ jobs:
               deploy/ecs-task-definition.json > "${RUNNER_TEMP}/ecs-task-definition.json"
           if [ -n "$QUARKUS_JDBC_URL" ]; then
             U="${QUARKUS_JDBC_USER:-student}"
-            jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${STUDENT_DB_PASSWORD:-}" '
-              .containerDefinitions[0].environment |= (
-                (map(select(.name != "QUARKUS_DATASOURCE_JDBC_URL" and .name != "QUARKUS_DATASOURCE_USERNAME" and .name != "STUDENT_DB_PASSWORD"))
-                + [{name:"QUARKUS_DATASOURCE_JDBC_URL",value:$url},{name:"QUARKUS_DATASOURCE_USERNAME",value:$user}]
-                + (if ($pass | length) > 0 then [{name:"STUDENT_DB_PASSWORD",value:$pass}] else [] end)
-              )
-            ' "${RUNNER_TEMP}/ecs-task-definition.json" > "${RUNNER_TEMP}/ecs-task-definition.jdbc.json"
+            # Objetos con claves entre comillas (jq rechaza {name:...} / value como identificador en este contexto).
+            jq --arg url "$QUARKUS_JDBC_URL" --arg user "$U" --arg pass "${STUDENT_DB_PASSWORD:-}" \
+              '.containerDefinitions[0].environment |= (
+                (map(select(.name != "QUARKUS_DATASOURCE_JDBC_URL" and .name != "QUARKUS_DATASOURCE_USERNAME" and .name != "STUDENT_DB_PASSWORD")))
+                + [{"name":"QUARKUS_DATASOURCE_JDBC_URL","value":$url},{"name":"QUARKUS_DATASOURCE_USERNAME","value":$user}]
+                + (if ($pass | length) > 0 then [{"name":"STUDENT_DB_PASSWORD","value":$pass}] else [] end)
+              )' \
+              "${RUNNER_TEMP}/ecs-task-definition.json" > "${RUNNER_TEMP}/ecs-task-definition.jdbc.json"
             mv "${RUNNER_TEMP}/ecs-task-definition.jdbc.json" "${RUNNER_TEMP}/ecs-task-definition.json"
           fi
           echo "file=${RUNNER_TEMP}/ecs-task-definition.json" >> "$GITHUB_OUTPUT"
