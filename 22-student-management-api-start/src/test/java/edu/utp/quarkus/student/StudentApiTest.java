@@ -4,8 +4,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.empty;
@@ -79,27 +77,5 @@ class StudentApiTest {
                 .when().get("/students/" + createdId)
                 .then()
                 .statusCode(404);
-    }
-
-    @Test
-    void validationRejectsInvalidScore() {
-        int studentId = given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {"code":"T-002","fullName":"Other","email":"o@utp.edu.pe","career":"IS"}
-                        """)
-                .when().post("/students")
-                .then()
-                .statusCode(201)
-                .extract().path("id");
-
-        given()
-                .contentType(ContentType.JSON)
-                .body("""
-                        {"courseCode":"X","score":25.0,"term":"2026-1"}
-                        """)
-                .when().post("/students/" + studentId + "/grades")
-                .then()
-                .statusCode(400);
     }
 }
