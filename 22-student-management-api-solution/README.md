@@ -218,6 +218,7 @@ La solution usa `%prod.quarkus.datasource.password=${STUDENT_DB_PASSWORD:...}`; 
 | `InvalidParameterException` en task definition | JSON inválido tras editar; coma final, comillas, o `executionRoleArn` de otra cuenta. |
 | El job termina pero *Deploy* falla o hace timeout | El **servicio** no existe o el nombre no coincide con `ECS_SERVICE`. |
 | *Wait for service stability* timeout | Tarea **unhealthy**: JDBC mal, RDS no alcanzable desde subnets/SG, o contraseña incorrecta. Revisa **CloudWatch Logs** del contenedor (`/ecs/student-management-api`). |
+| Tareas **Stopped** o **Pending** en bucle (sin llegar a *Running*) | Falta **`QUARKUS_DATASOURCE_JDBC_URL`** / **`STUDENT_DB_PASSWORD`**, RDS inalcanzable (SG), o **base vacía con `validate`**: sin tablas Hibernate no arranca. Esta solución usa **`update` en prod** para la demo con RDS nuevo (sin Flyway). Revisa **Logs** de la tarea o CloudWatch `/ecs/student-management-api`. |
 | Health check del contenedor falla | App no levanta (puerto 8080, error al conectar a BD, falta `quarkus-smallrye-health`). |
 
 ---
