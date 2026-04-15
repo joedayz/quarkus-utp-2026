@@ -13,7 +13,6 @@
         <module name="quarkus-conference (4)" />
         <module name="weather" />
         <module name="quarkus-calculator" />
-        <module name="24-aws-genai-bedrock" />
         <module name="sessions" />
         <module name="expense-service (1)" />
         <module name="quarkus-calculator (2)" />
@@ -107,6 +106,9 @@
         <module name="expense-service (4)" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="24-aws-genai-bedrock" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
