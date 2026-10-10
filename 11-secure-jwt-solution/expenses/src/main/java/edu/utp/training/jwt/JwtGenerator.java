@@ -2,6 +2,9 @@ package edu.utp.training.jwt;
 
 import io.smallrye.jwt.build.Jwt;
 
+import java.util.HashSet;
+import java.util.List;
+
 public class JwtGenerator {
 
     private static final String ISSUER = "https://example.com/utptraining";

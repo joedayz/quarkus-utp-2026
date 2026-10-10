@@ -10,6 +10,7 @@ Repo del curso **Microservicios cloud-native con Quarkus en AWS** para la UTP.
   - `22-student-management-api`: mini‑proyecto integrador (Student Management API).
   - `23-async-virtual-threads`: microservicios asíncronos usando virtual threads.
   - `24-aws-genai-bedrock`: integración de Quarkus con AWS Bedrock (módulo inspiración IA).
+  - `25-whats-new-quarkus`: novedades de Quarkus 3.34 → 3.40 (eviction por peso en cache L2, Quarkus MCP Server, Quarkus LangChain4j sobre Bedrock, y resumen del resto de releases).
 
 ## Módulos vs proyectos
 
@@ -41,6 +42,9 @@ Repo del curso **Microservicios cloud-native con Quarkus en AWS** para la UTP.
 
 - **Módulo 7 – IA en AWS (1h, opcional de inspiración)**
   - `24-aws-genai-bedrock`: ejemplo de microservicio Quarkus que orquesta llamadas a AWS Lambda y consulta un modelo fundacional vía Bedrock (RAG o análisis semántico).
+
+- **Módulo 8 – Novedades de Quarkus (opcional, actualización de plataforma)**
+  - `25-whats-new-quarkus`: demo de la eviction por peso en la cache L2 (3.38), Quarkus MCP Server 2.0.1 y Quarkus LangChain4j 1.13.3 sobre Bedrock (upgrades de componentes en 3.40), más un resumen con enlaces del resto de novedades 3.34 → 3.39.
 
 ## Cómo ejecutar los proyectos
 
