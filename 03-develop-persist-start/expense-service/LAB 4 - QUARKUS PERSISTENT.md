@@ -76,10 +76,6 @@ Agrega las siguientes dependencias dentro del elemento `<dependencies>`:
 </dependency>
 <dependency>
     <groupId>io.quarkus</groupId>
-    <artifactId>quarkus-hibernate-orm</artifactId>
-</dependency>
-<dependency>
-    <groupId>io.quarkus</groupId>
     <artifactId>quarkus-hibernate-validator</artifactId>
 </dependency>
 ```
@@ -98,12 +94,12 @@ Reemplaza el comentario `# TODO: Add configuration` con:
 
 ```properties
 quarkus.datasource.devservices.image-name=postgres:14.1
-quarkus.hibernate-orm.database.generation=drop-and-create
+quarkus.hibernate-orm.schema-management.strategy=drop-and-create
 ```
 
 **Explicación:**
 - `quarkus.datasource.devservices.image-name`: Especifica la imagen de PostgreSQL para Dev Services
-- `quarkus.hibernate-orm.database.generation=drop-and-create`: Crea y recrea el esquema de base de datos al iniciar
+- `quarkus.hibernate-orm.schema-management.strategy=drop-and-create`: Crea y recrea el esquema de base de datos al iniciar
 
 ## 5. Convertir Associate en una entidad JPA
 

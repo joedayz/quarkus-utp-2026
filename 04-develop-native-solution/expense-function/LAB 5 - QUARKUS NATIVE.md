@@ -582,6 +582,44 @@ Measure-Command { .\target\expense-function-1.0.0-SNAPSHOT-runner.exe }
 
 **Observación:** La aplicación nativa debería iniciar en milisegundos, mientras que la JVM puede tardar varios segundos.
 
+## Generar y ejecutar la imagen de contenedor con Podman (Mac Intel)
+
+`quarkus.native.container-build=true` solo compila el binario nativo dentro del builder de Mandrel; **no** crea una imagen. Para ello se necesita la extensión `quarkus-container-image-podman` y `quarkus.container-image.build=true`.
+
+`pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-container-image-podman</artifactId>
+</dependency>
+```
+
+`application.properties`:
+
+```properties
+quarkus.container-image.build=true
+quarkus.container-image.group=joedayz
+quarkus.container-image.name=expense-function
+quarkus.native.container-build=true
+quarkus.native.container-runtime=podman
+quarkus.native.builder-image=quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25
+```
+
+Pasos:
+
+```bash
+podman machine start
+./mvnw package -Dnative
+podman images
+podman run --rm -p 8080:8080 localhost/joedayz/expense-function:1.0.0-SNAPSHOT
+```
+
+Notas:
+- La etiqueta es `1.0.0-SNAPSHOT`, no `latest`. Sin el nombre completo (`localhost/...:tag`) Podman busca en Docker Hub y falla con `manifest unknown`.
+- Si aparece `loading registries configuration ... toml`, revisa que `~/.config/containers/registries.conf` sea TOML válido (sin líneas sueltas).
+- Mac Intel genera `amd64` (compatible con AWS Lambda x86_64). En Apple Silicon sería `arm64`.
+
 ## Resumen
 
 En este laboratorio has aprendido a:
