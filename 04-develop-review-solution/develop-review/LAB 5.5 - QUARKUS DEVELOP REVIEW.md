@@ -71,13 +71,14 @@ El archivo `pom.xml` incluye todas las dependencias necesarias:
 %dev.quarkus.datasource.jdbc.url = jdbc:postgresql://localhost:5432/testing
 %dev.quarkus.datasource.username = developer
 %dev.quarkus.datasource.password = developer
-%dev.quarkus.hibernate-orm.database.generation = drop-and-create
+%dev.quarkus.hibernate-orm.schema-management.strategy = drop-and-create
 ```
 
 **Explicación:**
 - `%dev` indica que estas propiedades solo se aplican en modo desarrollo
 - `drop-and-create` recrea el esquema de base de datos en cada inicio (útil para desarrollo)
 - En producción, usar `none` o `validate`
+- `quarkus.hibernate-orm.database.generation` es el nombre legacy de esta propiedad; sigue funcionando pero está deprecado, usa siempre `quarkus.hibernate-orm.schema-management.strategy`
 
 ### 3. Entidad Talk
 
@@ -659,6 +660,42 @@ podman run -i --rm -p 8080:8080 `
 - En Podman, usa `host.containers.internal` (o la IP del host en Linux)
 - Asegúrate de que PostgreSQL esté accesible desde el contenedor
 
+### Alternativa: ejecutar el contenedor usando una red de Podman/Docker (recomendado)
+
+Si `host.docker.internal` / `host.containers.internal` no resuelve correctamente (ocurre en algunos entornos Linux o configuraciones de Podman Machine en Mac), conecta ambos contenedores a una red común y referencia la base de datos por el **nombre del contenedor** en lugar de `localhost` o `host.*.internal`.
+
+#### Docker - Linux/Mac/Windows
+
+```bash
+docker network create devnet
+docker network connect devnet dev-postgres
+
+docker run -i --rm -p 8080:8080 --network devnet \
+  -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://dev-postgres:5432/testing \
+  -e QUARKUS_DATASOURCE_USERNAME=developer \
+  -e QUARKUS_DATASOURCE_PASSWORD=developer \
+  -e QUARKUS_HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY=drop-and-create \
+  quarkus/develop-review-jvm:1.0.0-SNAPSHOT
+```
+
+#### Podman - Linux/Mac/Windows
+
+```bash
+podman network create devnet
+podman network connect devnet dev-postgres
+
+podman run -i --rm -p 8080:8080 --network devnet \
+  -e QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://dev-postgres:5432/testing \
+  -e QUARKUS_DATASOURCE_USERNAME=developer \
+  -e QUARKUS_DATASOURCE_PASSWORD=developer \
+  -e QUARKUS_HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY=drop-and-create \
+  quarkus/develop-review-jvm:1.0.0-SNAPSHOT
+```
+
+**NOTA:**
+- `dev-postgres` es el nombre del contenedor creado anteriormente. Al conectarlo a la red `devnet`, Docker/Podman resuelven ese nombre como hostname dentro de la red, sin depender de `host.docker.internal`/`host.containers.internal` ni de IPs fijas.
+- El jar empaquetado corre con el perfil `prod`, por lo que las propiedades `%dev.*` del `application.properties` **no aplican**; por eso el datasource y el `schema-management.strategy` se pasan como variables de entorno (`QUARKUS_DATASOURCE_*`, `QUARKUS_HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY`) al ejecutar el contenedor.
+
 ## Mejores Prácticas Implementadas
 
 1. **Uso de Panache**: Simplifica el acceso a datos y reduce código boilerplate
@@ -710,7 +747,7 @@ podman run -i --rm -p 8080:8080 `
 ### Error: "Table does not exist"
 
 **Solución:** 
-- Verifica que `quarkus.hibernate-orm.database.generation = drop-and-create` esté configurado
+- Verifica que `quarkus.hibernate-orm.schema-management.strategy = drop-and-create` esté configurado (el nombre legacy `quarkus.hibernate-orm.database.generation` sigue funcionando, pero está deprecado)
 - Reinicia la aplicación para que Hibernate cree las tablas
 
 ### Tests fallan
