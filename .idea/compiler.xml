@@ -157,7 +157,7 @@
       <module name="microservice-session" options="" />
       <module name="microservice-speaker" options="-parameters" />
       <module name="microservice-speaker (1)" options="" />
-      <module name="microservice-speaker (2)" options="" />
+      <module name="microservice-speaker (2)" options="-parameters" />
       <module name="microservice-speaker (3)" options="" />
       <module name="microservices-speaker" options="" />
       <module name="monitor" options="-parameters" />
@@ -204,10 +204,10 @@
       <module name="test-devservices (2)" options="" />
       <module name="test-mock" options="-parameters" />
       <module name="test-mock (1)" options="" />
-      <module name="test-mock (2)" options="" />
+      <module name="test-mock (2)" options="-parameters" />
       <module name="test-unit" options="-parameters" />
       <module name="test-unit (1)" options="" />
-      <module name="test-unit (2)" options="" />
+      <module name="test-unit (2)" options="-parameters" />
       <module name="weather" options="-parameters" />
       <module name="weather (1)" options="" />
       <module name="weather (2)" options="" />
