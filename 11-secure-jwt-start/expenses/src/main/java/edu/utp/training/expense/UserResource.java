@@ -3,12 +3,14 @@ package edu.utp.training.expense;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Path( "/user" )
+@RolesAllowed({"USER"}) // Debe estar autenticado y tener el rol USER para acceder a este recurso
 public class UserResource {
 
     @Inject

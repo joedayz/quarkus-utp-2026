@@ -160,7 +160,6 @@ Tu archivo `application.properties` debería verse así:
 ```properties
 # Dev Services
 quarkus.datasource.devservices.image-name=registry.ocp4.example.com:8443/redhattraining/do378-postgres:14.1
-quarkus.kafka.devservices.image-name=registry.ocp4.example.com:8443/redhattraining/do378-redpanda:v22.3.4
 
 # Incoming Channels
 mp.messaging.incoming.new-speakers-in.connector=smallrye-kafka
@@ -182,19 +181,19 @@ mp.messaging.outgoing.upstream-members-out.topic=upstream-members-signed-up
 mp.messaging.outgoing.upstream-members-out.value.serializer=io.quarkus.kafka.client.serialization.ObjectMapperSerializer
 ```
 
-**Nota sobre Dev Services:** Si estás usando un registro de imágenes diferente o Docker Hub, puedes modificar las líneas de Dev Services. Por ejemplo:
+**Nota sobre Dev Services:** Ya no se configura la imagen de Redpanda (`quarkus.kafka.devservices.image-name`): Quarkus usa una imagen por defecto compatible. Fijar `redpandadata/redpanda:v22.3.4` o `v23.2.10` falla con `Error: unknown command "sh" for "rpk"`.
+
+**Nota (PostgreSQL):** Si estás usando un registro de imágenes diferente o Docker Hub, puedes modificar las líneas de Dev Services. Por ejemplo:
 
 **Para Docker Hub:**
 ```properties
 quarkus.datasource.devservices.image-name=postgres:14.1
-quarkus.kafka.devservices.image-name=redpandadata/redpanda:v22.3.4
 ```
 
 **Para Podman (si no tienes acceso al registro):**
 ```properties
 # Comentar o eliminar las líneas de image-name para usar las imágenes por defecto
 # quarkus.datasource.devservices.image-name=...
-# quarkus.kafka.devservices.image-name=...
 ```
 
 ---
@@ -637,14 +636,12 @@ mvnw.cmd clean verify -Pnative
 ```properties
 # Usar imágenes públicas de Docker Hub
 quarkus.datasource.devservices.image-name=postgres:14.1
-quarkus.kafka.devservices.image-name=redpandadata/redpanda:v22.3.4
 ```
 
-O comenta las líneas para usar las imágenes por defecto:
+No configures la imagen de Redpanda: Quarkus usa una por defecto. Para PostgreSQL, comenta la línea para usar la imagen por defecto:
 
 ```properties
 # quarkus.datasource.devservices.image-name=...
-# quarkus.kafka.devservices.image-name=...
 ```
 
 ### Problema: Error de compilación relacionado con el deserializer
